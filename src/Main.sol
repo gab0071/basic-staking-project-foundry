@@ -72,7 +72,7 @@ contract Main is Ownable {
     function unstake() public {
         // lets check the balance to unstake
         uint256 amountToUnstake = Stakes[msg.sender].StakedBalance;
-        if (balance <= 0) {
+        if (amountToUnstake <= 0) {
             revert Main_stakingBalanceMustBeGreaterThanZero();
         }
         // lets transfer to the user the StakingToken (STK) that they staked
