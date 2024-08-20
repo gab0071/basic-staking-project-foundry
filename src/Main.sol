@@ -7,7 +7,7 @@ import {RewardToken} from "./RewardToken.sol";
 
 /// @title Main Contract
 /// @author Gabi Maverick from catellatech
-/// @notice This is the main contract that manages the staking and unstaking logic
+/// @notice This is the main contract that manages the staking and unstaking also the rewardTokensDistribution logic
 /// @dev This contract extends the Ownable contract from OpenZeppelin
 /// @dev This contract is used just as a educational purpose dont use it in production
 
