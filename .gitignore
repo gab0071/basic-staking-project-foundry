@@ -5,8 +5,9 @@ out/
 # Ignores development broadcast logs
 !/broadcast
 /broadcast/*/31337/
+/broadcast/DeployMainContract.s.sol/11155111
 /broadcast/**/dry-run/
-/broadcast/*/DeployMainContract
+
 
 # Docs
 docs/
