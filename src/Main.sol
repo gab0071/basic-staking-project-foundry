@@ -1,31 +1,22 @@
 // SPDX-LINCENSE-Identifier: MIT
 pragma solidity ^0.8.20;
-pragma experimental ABIEncoderV2;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {StakingToken} from "./StakingToken.sol";
-import {RewardToken} from "./RewardToken.sol";
-
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { StakingToken } from "./StakingToken.sol";
+import { RewardToken } from "./RewardToken.sol";
 
 /// @title Main Contract
 /// @author Gabi Maverick from catellatech
 /// @notice This is the main contract that manages the staking and unstaking also the rewardTokensDistribution logic
-/// @dev This contract extends the Ownable contract from OpenZeppelin
 /// @dev This contract is used just as a educational purpose dont use it in production
-
 contract Main is Ownable {
-    // custom errors
-    error Main_amountMustBeGreaterThanZero();
-    error Main_stakingBalanceMustBeGreaterThanZero();
-
-    event SuccessfulStaked(address indexed user, uint256 amount);
-    event SuccessfulUnstake(address indexed user, uint256 amount);
-
+    /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            Variables
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     StakingToken public immutable i_stakingToken;
     RewardToken public immutable i_rewardToken;
-
     address[] public stakers;
-    
+
     struct StakeInfo {
         uint256 StakedBalance;
         bool hasStaked;
@@ -34,10 +25,29 @@ contract Main is Ownable {
 
     mapping(address user => StakeInfo) public Stakes;
 
+    /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            Events
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+    event SuccessfulStaked(address indexed user, uint256 amount);
+    event SuccessfulUnstake(address indexed user, uint256 amount);
+
+    /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            Custom Errors
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+    error Main_amountMustBeGreaterThanZero();
+    error Main_stakingBalanceMustBeGreaterThanZero();
+
+    /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            Constructor
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     constructor(StakingToken _stakingToken, RewardToken _rewardToken) Ownable(msg.sender) {
         i_stakingToken = _stakingToken;
         i_rewardToken = _rewardToken;
     }
+
+    /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            Public Functions
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
     /// @notice This function is used to stake (STK) tokens
     /// @param _amountToStake amount of STK tokens to stake
@@ -87,8 +97,9 @@ contract Main is Ownable {
 
     /// @notice This function is used to distribute the reward token (RWT) to the users who currently staking in the platform
     /// @dev We iterate through the stakers array and transfer the reward token (RWT) to each user
-    /// 🚨 this function is for educational purpuse but it can be better tbh, this can maybe in production can cause DoS
-    /// if a lot of users stake and the array is big enough to cause DoS, if u want to apply this in production consider Consider limiting the number of iterations in for-loops that make external calls
+    //**🚨 this function is for educational purpuse but it can be better tbh, this can maybe in production can cause DoSif a lot
+    // of users stake and the array is big enough to cause DoS, if u want to apply this in production consider Consider limiting the
+    // number of iterations in for-loops that make external calls*/
     function rewardTokensDistribution() public onlyOwner {
         uint256 length = stakers.length;
         for (uint256 i; i < length; i++) {
