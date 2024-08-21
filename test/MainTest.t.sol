@@ -7,12 +7,6 @@ import { Main } from "../src/Main.sol";
 import { Test } from "forge-std/Test.sol";
 
 contract MainTest is Test {
-    // custom errors
-    error Main_amountMustBeGreaterThanZero();
-    error Main_stakingBalanceMustBeGreaterThanZero();
-
-    event SuccessfulUnstake(address indexed user, uint256 amount);
-
     // call it all the contract that i need
     StakingToken public stakingToken;
     RewardToken public rewardToken;
@@ -24,6 +18,12 @@ contract MainTest is Test {
 
     uint256 public stakingTokenInitialSupply = 1_000_000;
     uint256 public rewardTokenInitialSupply = 1_000_000;
+
+    // custom errors
+    error Main_amountMustBeGreaterThanZero();
+    error Main_stakingBalanceMustBeGreaterThanZero();
+
+    event SuccessfulUnstake(address indexed user, uint256 amount);
 
     function setUp() public {
         stakingToken = new StakingToken(stakingTokenInitialSupply);
