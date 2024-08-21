@@ -31,12 +31,14 @@ contract Main is Ownable {
     event SuccessfulStaked(address indexed user, uint256 amount);
     event SuccessfulUnstake(address indexed user, uint256 amount);
 
+    
     /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
                                             Custom Errors
     /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     error Main_amountMustBeGreaterThanZero();
     error Main_stakingBalanceMustBeGreaterThanZero();
 
+    
     /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
                                             Constructor
     /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -97,7 +99,7 @@ contract Main is Ownable {
 
     /// @notice This function is used to distribute the reward token (RWT) to the users who currently staking in the platform
     /// @dev We iterate through the stakers array and transfer the reward token (RWT) to each user
-    //**🚨 this function is for educational purpuse but it can be better tbh, this can maybe in production can cause DoSif a lot
+    //**🚨 this function is for educational purpuse but it can be better tbh, this can maybe in production can cause DoS if a lot
     // of users stake and the array is big enough to cause DoS, if u want to apply this in production consider Consider limiting the
     // number of iterations in for-loops that make external calls*/
     function rewardTokensDistribution() public onlyOwner {
