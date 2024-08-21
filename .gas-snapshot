@@ -1,0 +1,6 @@
+MainTest:testRewardTokensDistribution() (gas: 339307)
+MainTest:testStakingToken() (gas: 247525)
+MainTest:testUnstake() (gas: 238198)
+MainTest:testmainContractContractOwner() (gas: 10582)
+RewardTokenTest:testRewardTokenSupply() (gas: 12607)
+StakingTokenTest:testSupply() (gas: 12584)

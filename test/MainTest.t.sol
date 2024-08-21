@@ -6,6 +6,7 @@ import { RewardToken } from "../src/RewardToken.sol";
 import { Main } from "../src/Main.sol";
 import { Test } from "forge-std/Test.sol";
 
+
 contract MainTest is Test {
     // call it all the contract that i need
     StakingToken public stakingToken;
