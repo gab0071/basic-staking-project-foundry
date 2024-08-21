@@ -16,6 +16,9 @@ contract MainTest is Test {
     error Main_amountMustBeGreaterThanZero();
     error Main_stakingBalanceMustBeGreaterThanZero();
 
+    event SuccessfulStaked(address indexed user, uint256 amount);
+    event SuccessfulUnstake(address indexed user, uint256 amount);
+
     // call it all the contract that i need
     StakingToken public stakingToken;
     RewardToken public rewardToken;
@@ -46,26 +49,22 @@ contract MainTest is Test {
     // user1 and user2 stake some STK tokens correctly
     function testStakingToken() public  {
         vm.startPrank(user1);
-        uint256 amountToStake = 555;
+        uint256 amountToStakeUser1 = 555;
         // Let's approve the Main contract to stake the STK tokens
-        stakingToken.approve(address(main), amountToStake);
+        stakingToken.approve(address(main), amountToStakeUser1);
         // Let's stake the STK tokens
-        main.stake(amountToStake);
+        main.stake(amountToStakeUser1);
         vm.stopPrank();
-
-        // verify that user1 was succefully added into the stakers array
-        address staker = main.stakers(0);
-        assertEq(staker, user1, "Staker was not added to the array.");
         
         // Test that the Main contract receives the STK tokens
-        assertEq(stakingToken.balanceOf(address(main)), amountToStake);
+        assertEq(stakingToken.balanceOf(address(main)), amountToStakeUser1);
         
         // Destructure the returned struct into individual variables for user1
         (uint256 stakedBalance, bool hasStaked, bool isStaking) = main.Stakes(user1);
         // Test that the values of the Stakes struct are updated correctly user1
-        assertEq(stakedBalance, amountToStake);
-        assertEq(isStaking, true);
+        assertEq(stakedBalance, amountToStakeUser1);
         assertEq(hasStaked, true);
+        assertEq(isStaking, true);
 
         // Let's make user2 stake some STK tokens
         vm.startPrank(user2);
@@ -75,26 +74,66 @@ contract MainTest is Test {
         vm.stopPrank();
         
         
-        uint256 newStakedBalance = amountToStake + amountToStakeUser2;
+        uint256 newStakedBalance = amountToStakeUser1 + amountToStakeUser2;
         assertEq(stakingToken.balanceOf(address(main)), newStakedBalance);
 
-        // Destructure the returned struct into individual variables for user2
-        (uint256 stakedBalanceUser2, bool hasStakedUser2, bool isStakingUser2) = main.Stakes(user2);
-        // Test that the values of the Stakes struct are updated correctly user2
-        assertEq(stakedBalanceUser2, amountToStakeUser2);
-        assertEq(isStakingUser2, true);
-        assertEq(hasStakedUser2, true);
+        // verify that user2 was succefully added into the stakers array
+        address staker = main.stakers(1);
+        assertEq(staker, user2, "Staker number 2 was not added to the array.");
 
     }
 
     function testStaingFailure() public {
         vm.startPrank(user3);
-        uint256 amountToStake = 0;
-        stakingToken.approve(address(main), amountToStake);
+        uint256 amountToStakeUser3 = 0;
+        stakingToken.approve(address(main), amountToStakeUser3);
         vm.expectRevert(Main_amountMustBeGreaterThanZero.selector);
-        main.stake(amountToStake);
+        main.stake(amountToStakeUser3);
         vm.stopPrank();
     }
+
+    function testUnstake() public {
+        uint256 amountToUnstake = 555;
+        // Let's call the function where users stake tokens 
+        testStakingToken();
+
+        // Let's emit the event where the user unstakes
+        vm.expectEmit();
+        emit SuccessfulUnstake(user1, amountToUnstake);
+
+        // User1 unstake the tokens
+        vm.startPrank(user1);
+        main.unstake();
+        vm.stopPrank();
+
+        // Let's see if the user3 can unstake
+        vm.startPrank(user3);
+        vm.expectRevert(Main_stakingBalanceMustBeGreaterThanZero.selector);
+        main.unstake();
+        vm.stopPrank();
+    }
+
+    function testRewardTokensDistribution() public {
+        // Let's create the enviroment where exist stakers
+        testStakingToken();
+
+        uint256 amountUser1Staked = 555;
+        uint256 amountUser2Staked = 4_000;
+
+        // Now lets make the distribution of the reward tokens to the stakers (In this case 1:1)
+        // So if user1 staked 555 STK tokens he is going to receive 555 RWT tokens
+        vm.startPrank(address(this));
+        // We are going to send full supply to the Main contract to distribute the reward tokens to the stakers
+        rewardToken.transfer(address(main), rewardTokenInitialSupply);
+        main.rewardTokensDistribution();
+        vm.stopPrank();
+
+        // Let's check if the reward token balance is correct
+        assertEq(rewardToken.balanceOf(user1), amountUser1Staked);
+        assertEq(rewardToken.balanceOf(user2), amountUser2Staked);
+
+    }
+
 
     
     

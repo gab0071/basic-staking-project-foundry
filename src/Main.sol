@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 pragma experimental ABIEncoderV2;
 
-
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {StakingToken} from "./StakingToken.sol";
 import {RewardToken} from "./RewardToken.sol";
@@ -26,8 +25,7 @@ contract Main is Ownable {
     RewardToken public immutable i_rewardToken;
 
     address[] public stakers;
-    /// @dev I decide to use an struct here to store the staked balance and whether the user is staking or not to adding into the mapping and save some gas but also to work more with stuct
-
+    
     struct StakeInfo {
         uint256 StakedBalance;
         bool hasStaked;
