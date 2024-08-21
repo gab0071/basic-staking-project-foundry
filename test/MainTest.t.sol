@@ -83,7 +83,7 @@ contract MainTest is Test {
 
     }
 
-    function testStaingFailure() public {
+    function testStakingFailure() public {
         vm.startPrank(user3);
         uint256 amountToStakeUser3 = 0;
         stakingToken.approve(address(main), amountToStakeUser3);
