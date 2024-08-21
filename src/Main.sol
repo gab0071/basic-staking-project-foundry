@@ -1,9 +1,12 @@
 // SPDX-LINCENSE-Identifier: MIT
 pragma solidity ^0.8.20;
+pragma experimental ABIEncoderV2;
+
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {StakingToken} from "./StakingToken.sol";
 import {RewardToken} from "./RewardToken.sol";
+
 
 /// @title Main Contract
 /// @author Gabi Maverick from catellatech
