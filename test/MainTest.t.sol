@@ -69,8 +69,9 @@ contract MainTest is Test {
         mainContract.stake(amountToStakeUser2);
         vm.stopPrank();
 
-        // check the new balance of STK tokens in the mainContract
+        // let's sum the staked balance of user1 and user2
         uint256 newStakedBalance = amountToStakeUser1 + amountToStakeUser2;
+        // check the new balance of STK tokens in the mainContract
         uint256 stakingTokenBalanceOfMainContractNew = stakingToken.balanceOf(address(mainContract));
         
         assertEq(stakingTokenBalanceOfMainContractNew, newStakedBalance);
