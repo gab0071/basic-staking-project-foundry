@@ -1,3 +1,4 @@
+```
 // Layout of Contract:
 // version
 // imports
@@ -19,3 +20,5 @@
 // private
 // internal & private view & pure functions
 // external & public view & pure functions
+
+```
