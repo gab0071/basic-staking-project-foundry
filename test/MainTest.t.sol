@@ -76,7 +76,7 @@ contract MainTest is Test {
         assertEq(stakingTokenBalanceOfMainContractNew, newStakedBalance);
 
         // verify that user2 was succefully added into the stakers array
-        address staker = mainContract.getStakerAt(1);
+        address staker = mainContract.stakers(1);
         assertEq(staker, user2, "Staker number 2 was not added to the array.");
 
 

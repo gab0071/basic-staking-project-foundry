@@ -23,7 +23,7 @@ contract Main is Ownable {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     StakingToken public immutable i_stakingToken;
     RewardToken public immutable i_rewardToken;
-    address[] private stakers;
+    address[] public stakers;
 
     struct StakeInfo {
         uint256 StakedBalance;
@@ -116,13 +116,5 @@ contract Main is Ownable {
                 i_rewardToken.transfer(receipient, balance);
             }
         }
-    }
-
-    /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                            Getter Functions
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-    function getStakerAt(uint256 index) public view returns (address) {
-        require(index < stakers.length, "Index out of bounds");
-        return stakers[index];
     }
 }
