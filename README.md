@@ -40,5 +40,110 @@ graph TD
   C[RewardToken_Contract] --> |ERC20_Implementation| C
   
   A --> |Handles_Staking_and_Unstaking_Logic| A
+```
 
-```  
+## Quickstart
+```
+git clone https://github.com/gab0071/basic-staking-project-foundry
+cd basic-staking-project-foundry
+forge install 
+forge build
+```
+## Usage
+
+### OpenZeppelin
+
+[OpenZeppelin Contracts Docs](https://docs.openzeppelin.com/contracts/4.x/)
+<br><br>
+[OpenZeppelin GitHub Repo](https://github.com/OpenZeppelin/openzeppelin-contracts)
+<br>
+
+### Installing OpenZeppelin Contracts Package
+
+```bash
+forge install OpenZeppelin/openzeppelin-contracts --no-commit
+```
+
+## Start a local node
+
+```
+make anvil
+```
+
+## Deploy
+
+This will default to your local node. You need to have it running in another terminal in order for it to deploy.
+
+```
+make deploy
+```
+
+## Deploy - Other Network
+
+[See below](#deployment-to-a-testnet-or-mainnet)
+
+## Testing
+```
+forge test
+```
+
+or if use Makefile
+
+```
+make test
+```
+
+### Test Coverage
+```
+forge coverage
+```
+
+
+## Deployment to a testnet or mainnet
+
+1. Setup environment variables
+
+You'll want to set your `SEPOLIA_RPC_URL` and `PRIVATE_KEY` as environment variables. You can add them to a `.env` file, similar to what you see in `.env.example`.
+
+- `PRIVATE_KEY`: The private key of your account (like from [metamask](https://metamask.io/)). **NOTE:** FOR DEVELOPMENT, PLEASE USE A KEY THAT DOESN'T HAVE ANY REAL FUNDS ASSOCIATED WITH IT.
+  - You can [learn how to export it here](https://metamask.zendesk.com/hc/en-us/articles/360015289632-How-to-Export-an-Account-Private-Key).
+- `SEPOLIA_RPC_URL`: This is url of the sepolia testnet node you're working with. You can get setup with one for free from [Alchemy](https://alchemy.com/?a=673c802981)
+
+Optionally, add your `ETHERSCAN_API_KEY` if you want to verify your contract on [Etherscan](https://etherscan.io/).
+
+1. Get testnet ETH
+Head over to [faucets.chain.link](https://faucets.chain.link/) and get some testnet ETH. You should see the ETH show up in your metamask.
+
+2. Deploy
+```
+make deploy-sepolia
+```
+
+
+## Estimate gas
+You can estimate how much gas things cost by running:
+
+```
+forge snapshot
+```
+
+And you'll see and output file called `.gas-snapshot`
+
+
+## Formatting
+To run code formatting:
+
+```
+forge fmt
+```
+
+## Layout of Contract
+[Check this readme](layoutContract.md)
+
+<p align="center">
+<a href="mailto:ccatellatech@gmail.com" target="_blank" >
+  <img alt="Email - J.Gabriela" src="https://img.shields.io/badge/Email--%23F8952D?style=social&logo=gmail">
+</a> 
+<br/>
+  Made with ❤️ by <b>catellaTech</b>.
+<p/>
