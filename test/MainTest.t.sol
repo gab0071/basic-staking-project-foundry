@@ -45,7 +45,7 @@ contract MainTest is Test {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     function testStakingToken() public {
         vm.startPrank(user1);
-        // Let's approve the mainContract contract to stake the STK tokens
+        // Let's approve the mainContract to stake the STK tokens
         stakingToken.approve(address(mainContract), amountToStakeUser1);
         // Let's stake the STK tokens
         mainContract.stake(amountToStakeUser1);
@@ -53,7 +53,7 @@ contract MainTest is Test {
 
         uint256 stakingTokenBalanceOfMainContract = stakingToken.balanceOf(address(mainContract));
 
-        // Test that the mainContract contract receives the STK tokens
+        // Test that the mainContract receives the STK tokens
         assertEq(stakingTokenBalanceOfMainContract, amountToStakeUser1);
 
         // Destructure the returned struct into individual variables for user1
@@ -131,7 +131,7 @@ contract MainTest is Test {
         // Now lets make the distribution of the reward tokens to the stakers (In this case 1:1)
         // So if user1 staked 555 STK tokens he is going to receive 555 RWT tokens
         vm.startPrank(address(this));
-        // We are going to send full supply to the mainContract contract to distribute the reward tokens to the stakers
+        // We are going to send full supply to the mainContract to distribute the reward tokens to the stakers
         rewardToken.transfer(address(mainContract), TokensInitialSupply);
         mainContract.rewardTokensDistribution();
         vm.stopPrank();
