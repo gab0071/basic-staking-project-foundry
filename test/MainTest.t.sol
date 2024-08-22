@@ -81,10 +81,10 @@ contract MainTest is Test {
         assertEq(staker, user2, "Staker number 2 was not added to the array.");
 
 
-
         // check that user3 can not stake with 0 amount
         vm.startPrank(user3);
-        uint256 amountToStakeUser3 = 0;
+        // No amount is assigned to `amountToStakeUser3` because `uint256` is initialized to 0 by default.
+        uint256 amountToStakeUser3;
         stakingToken.approve(address(mainContract), amountToStakeUser3);
         vm.expectRevert(Main.Main__amountMustBeGreaterThanZero.selector);
         mainContract.stake(amountToStakeUser3);
@@ -101,7 +101,7 @@ contract MainTest is Test {
         // Let's get the staked balance of user1 
         (uint256 amountToUnstake, , ) = mainContract.Stakes(user1);
 
-        // Let's emit the event where the user unstakes
+        // Let's emit the event when the user unstakes successfully
         vm.expectEmit();
         emit SuccessfulUnstake(user1, amountToUnstake);
 
@@ -110,7 +110,7 @@ contract MainTest is Test {
         mainContract.unstake();
         vm.stopPrank();
 
-        // Let's see if the user3 can unstake
+        // Let's see if the user3 can unstake if he is not staking
         vm.startPrank(user3);
         vm.expectRevert(Main.Main__stakingBalanceMustBeGreaterThanZero.selector);
         mainContract.unstake();
@@ -124,7 +124,7 @@ contract MainTest is Test {
         // Let's create the enviroment where exist stakers
         testStakingToken();
         
-        // Access to the struct where exist the staked balance of the stakers 
+        // Access the struct containing the staked balance of the stakers
         (uint256 amountUser1Staked, , ) = mainContract.Stakes(user1);
         (uint256 amountUser2Staked, , ) = mainContract.Stakes(user2);
 
