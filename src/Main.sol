@@ -11,11 +11,19 @@ import { RewardToken } from "./RewardToken.sol";
 /// @dev This contract is used just as a educational purpose dont use it in production
 contract Main is Ownable {
     /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            Custom Errors
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+    error Main__amountMustBeGreaterThanZero();
+    error Main__stakingBalanceMustBeGreaterThanZero();
+    error Main__TransferFailed();
+    
+    
+    /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
                                             Variables
     /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
     StakingToken public immutable i_stakingToken;
     RewardToken public immutable i_rewardToken;
-    address[] public stakers;
+    address[] private stakers;
 
     struct StakeInfo {
         uint256 StakedBalance;
@@ -31,12 +39,6 @@ contract Main is Ownable {
     event SuccessfulStaked(address indexed user, uint256 amount);
     event SuccessfulUnstake(address indexed user, uint256 amount);
 
-    
-    /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                            Custom Errors
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-    error Main_amountMustBeGreaterThanZero();
-    error Main_stakingBalanceMustBeGreaterThanZero();
 
     
     /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,23 +59,26 @@ contract Main is Ownable {
     /// @dev and update the staked balance
     /// @dev and lets add to the array the staker address if they are not already there
     /// @dev and lets update the staking status
-    /// @dev if the amount to stake is not good throw an error
+    /// @dev Remember apply CEI pattern, in this case already applied
     function stake(uint256 _amountToStake) public {
         if (_amountToStake <= 0) {
-            revert Main_amountMustBeGreaterThanZero();
+            revert Main__amountMustBeGreaterThanZero();
         }
-        // If the amount to stake is good lets transfer StakingToken (STK) to the Main contract
-        i_stakingToken.transferFrom(msg.sender, address(this), _amountToStake);
-        // update the staked balance
-        Stakes[msg.sender].StakedBalance += _amountToStake;
         // And let's add the staker's address to the array if that user is not already there
         if (!Stakes[msg.sender].hasStaked) {
             stakers.push(msg.sender);
         }
+        // update the staked balance
+        Stakes[msg.sender].StakedBalance += _amountToStake;
+        emit SuccessfulStaked(msg.sender, _amountToStake);
         // and lets update the staking status
         Stakes[msg.sender].hasStaked = true;
         Stakes[msg.sender].isStaking = true;
-        emit SuccessfulStaked(msg.sender, _amountToStake);
+        // If the amount to stake is good lets transfer StakingToken (STK) to the Main contract
+        (bool success) = i_stakingToken.transferFrom(msg.sender, address(this), _amountToStake);
+        if(!success) {
+            revert Main__TransferFailed();
+        }
     }
 
     /// @notice This function is used to unstake
@@ -86,15 +91,15 @@ contract Main is Ownable {
         // lets check the balance to unstake
         uint256 amountToUnstake = Stakes[msg.sender].StakedBalance;
         if (amountToUnstake <= 0) {
-            revert Main_stakingBalanceMustBeGreaterThanZero();
+            revert Main__stakingBalanceMustBeGreaterThanZero();
         }
-        // lets transfer to the user the StakingToken (STK) that they staked
-        i_stakingToken.transfer(msg.sender, amountToUnstake);
         // and lets update the staked balance
         Stakes[msg.sender].StakedBalance = 0;
         // and lets update the staking status
         Stakes[msg.sender].isStaking = false;
         emit SuccessfulUnstake(msg.sender, amountToUnstake);
+        // lets transfer to the user the StakingToken (STK) that they staked
+        i_stakingToken.transfer(msg.sender, amountToUnstake);
     }
 
     /// @notice This function is used to distribute the reward token (RWT) to the users who currently staking in the platform
@@ -111,5 +116,13 @@ contract Main is Ownable {
                 i_rewardToken.transfer(receipient, balance);
             }
         }
+    }
+
+    /*/////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                            Getter Functions
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+    function getStakerAt(uint256 index) public view returns (address) {
+        require(index < stakers.length, "Index out of bounds");
+        return stakers[index];
     }
 }
